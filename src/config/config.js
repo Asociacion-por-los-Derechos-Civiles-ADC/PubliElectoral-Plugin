@@ -190,6 +190,16 @@ export default
       "name": "José Luis Gioja",
       "page_id": "398675146900419",
       "page_name": "https://www.facebook.com/joseluisgioja/"
+    },
+    {
+      "name": "Verónica Magario",
+      "page_id": "195517260610729",
+      "page_name": "https://www.facebook.com/magariovero/"
+    },
+    {
+      "name": "Fernando Espinoza",
+      "page_id": "147255748694051",
+      "page_name": "https://www.facebook.com/FerEspinozaOK/"
     }
   ],
   "locations": [
