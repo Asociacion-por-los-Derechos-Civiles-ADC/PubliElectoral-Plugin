@@ -175,6 +175,21 @@ export default
       "name": "Secretaría de Derechos Humanos y Pluralismo Cultural",
       "page_id": "450525428374372",
       "page_name": "https://www.facebook.com/SDHArgentina/"
+    },
+    {
+      "name": "Miguel Ángel Pichetto",
+      "page_id": "2247911975422452",
+      "page_name": "https://www.facebook.com/MAPichetto/"
+    },
+    {
+      "name": "Alfredo Cornejo",
+      "page_id": "714605368619727",
+      "page_name": "https://www.facebook.com/CornejoAlfredo/"
+    },
+    {
+      "name": "José Luis Gioja",
+      "page_id": "398675146900419",
+      "page_name": "https://www.facebook.com/joseluisgioja/"
     }
   ],
   "locations": [
