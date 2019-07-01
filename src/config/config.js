@@ -275,7 +275,7 @@ export default
     "profileIdContainerQuerySelector": "a[title='Perfil']",
     "targetAdWord": "Publicidad",
     "postQuerySelector": "hyperfeed_story_id_",
-    "postSubtitleQuerySelector": "[id^='fe_edsubtitle']",
+    "postSubtitleQuerySelector": "[id^='feedsub_title']",
     "postIdQuerySelector": "[name=ft_ent_identifier]"
   }
 }
