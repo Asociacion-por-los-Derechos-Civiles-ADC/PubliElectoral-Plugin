@@ -25,9 +25,20 @@ function checkNode(mutation) {
   }
 }
 
+function jqueryNode(node, regex) {
+  var all_tags = node.getElementsByTagName("*");
+  var results = [];
+  for (var i = all_tags.length-1; i >= 0; -- i) {
+    if (regex.test(all_tags[i].id)) {
+      results.push(all_tags[i]);
+    }
+  }
+  return results;
+}
+
 function getTargetAdAccount(node) {
-  let subtitleNode = node.target.querySelector(config.fbAds.postSubtitleQuerySelector)
-  let titleNode = subtitleNode.previousSibling.innerHTML
+  let subtitleNode = jqueryNode(node.target, config.fbAds.postSubtitleQuerySelector)
+  let titleNode = subtitleNode[0].previousSibling.innerHTML
   let account = config.accounts.filter( (account) => {
     return titleNode.includes(account.page_id) && titleNode.includes(account.page_name)
   })
@@ -46,8 +57,8 @@ function buildData(node, account) {
 }
 
 function isAd(node) {
-  let subtitleNode = node.target.querySelector(config.fbAds.postSubtitleQuerySelector)
-  let subtitle = subtitleNode.innerText.replace(/-/g, '')
+  let subtitleNode = jqueryNode(node.target, config.fbAds.postSubtitleQuerySelector)
+  let subtitle = subtitleNode[0].innerText.replace(/-/g, '')
   if (subtitle.includes(config.fbAds.targetAdWord)) {
     node.target.style.border = "3px solid #FF00FF"
   }
