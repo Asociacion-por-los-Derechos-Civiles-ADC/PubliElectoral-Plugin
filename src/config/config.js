@@ -4,7 +4,7 @@ export default
     {
       "name": "Alberto Fernández",
       "page_id": "1786813798208655",
-      "page_name": "https://www.facebook.com/AlferdezPRENSA/"
+      "page_name": "https://www.facebook.com/alferdezok/"
     },
     {
       "name": "Mauricio Macri",
@@ -275,7 +275,7 @@ export default
     "profileIdContainerQuerySelector": "a[title='Perfil']",
     "targetAdWord": "Publicidad",
     "postQuerySelector": "hyperfeed_story_id_",
-    "postSubtitleQuerySelector": "[id^='feedsub_title']",
-    "postIdQuerySelector": "[name=ft_ent_identifier]"
+    "postIdQuerySelector": "[name=ft_ent_identifier]",
+    "postSubtitleQuerySelector": /([\s\S]*.*[mM].*[eE].*[tT].*[aA]*.*[\s\S]|[fF].*[eE].*[eE].*[dD].*[sS].*[uU].*[bB].*[tT].*[iI].*[tT].*[lL].*[eE])/
   }
 }
