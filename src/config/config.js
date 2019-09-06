@@ -276,6 +276,6 @@ export default
     "targetAdWord": "Publicidad",
     "postQuerySelector": "hyperfeed_story_id_",
     "postIdQuerySelector": "[name=ft_ent_identifier]",
-    "postSubtitleQuerySelector": /([\s\S]*.*[mM].*[eE].*[tT].*[aA]*.*[\s\S]|[fF].*[eE].*[eE].*[dD].*[sS].*[uU].*[bB].*[tT].*[iI].*[tT].*[lL].*[eE])/
+    "postSubtitleQuerySelector": /([\s\S]*.*[mM].*[eE].*[tT].*[aA]*.*[\s\S]|[fF].*[eE].*[eE].*[dD].*[sS].*[uU].*[bB].*[tT].*[iI].*[tT].*[lL].*[eE]|[sS].*[tT].*[oO].*[rR].*[yY]*.*[\s\S])/
   }
 }
