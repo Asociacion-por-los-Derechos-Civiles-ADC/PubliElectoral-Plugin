@@ -1,2 +1,2 @@
-const observer = require('./fbAds/observer.js')
-observer.run()
+const observer = require('./fbAds/observer.js');
+observer.run();

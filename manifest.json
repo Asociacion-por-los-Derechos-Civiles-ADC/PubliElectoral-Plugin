@@ -9,6 +9,7 @@
   },
   "permissions": [
     "*://*.facebook.com/",
+    "*://*.facebook.com/home.php",
     "*://*.facebook.com/?ref=logo",
     "storage"
   ],
@@ -19,6 +20,7 @@
     {
       "matches": [
         "*://*.facebook.com/",
+        "*://*.facebook.com/home.php",
         "*://*.facebook.com/?ref=logo"
       ],
       "js": [
