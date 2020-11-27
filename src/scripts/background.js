@@ -9,7 +9,7 @@ function handleMessage(request, sender, sendResponse) {
     if (request.download) {
       json = {
         hash: request.hash,
-        location: request.location,
+        location: request.location.toUpperCase(),
         source: request.source
       }
       url = url + "/download"
@@ -17,7 +17,7 @@ function handleMessage(request, sender, sendResponse) {
       json = {
         ad: request.ad,
         hash: request.hash,
-        location: request.location
+        location: request.location.toUpperCase()
       }
       url = url + "/adv?plugin=true"
     }
