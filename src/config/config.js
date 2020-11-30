@@ -7,7 +7,7 @@ export default
     "Mexico",
     "Paraguay"
   ],
-  "adUri": "http://localhost:5078",
+  "adUri": "https://api.publielectoral.lat",
   "fbAds": {
     "mainContainerQuerySelector": "[id^='topnews_main_stream_'",
     "profileIdContainerQuerySelector": "a[title='Perfil']",
