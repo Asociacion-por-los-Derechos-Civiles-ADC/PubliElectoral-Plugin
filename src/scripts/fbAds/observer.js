@@ -22,16 +22,17 @@ const sendAds = () => {
     if (m["pub_elec_location"] && m["pub_elec_userid"]) {
       const ads = [];
       const userid = m["pub_elec_userid"]
-      document.querySelectorAll("article[data-xt*=sponsor], article[data-store*=sponsor]").forEach(ad => ads.push(ad));
+      document.querySelectorAll("a[aria-label*=Publicidad], a[aria-label*=Sponsor]").forEach(ad => ads.push(ad.offsetParent));
       const adsToSend = ads.filter(x => sentAds.indexOf(x) === -1);
       sentAds = ads;
-      console.log("ADS:", ads)
-      console.log("SENT ADS:", sentAds)
-      adsToSend.forEach(ad => sendAd({
-        ad: ad.dataset.ft || "",
-        hash: hashCode(userid),
-        location: m["pub_elec_location"]
-      }));
+      adsToSend.forEach(ad => {
+        sendAd({
+          ad: ad.outerHTML || "",
+          hash: hashCode(userid),
+          location: m["pub_elec_location"],
+          ad_account_name: ad.outerText.split('\n')[0].trim()
+        })
+      });
     }
   })
 }
@@ -42,7 +43,6 @@ const sendUserDownload = () => {
       const prof = document.getElementsByClassName("profpic")[0]
       const userid = prof ? prof.parentElement.href.split("/")[3].split("?")[0] : uuidv4()
       storage.set({pub_elec_userid: userid})
-      console.log("USER HASH:", hashCode(userid))
       if (userid !== "") {
           sendDownload({
             hash: hashCode(userid),

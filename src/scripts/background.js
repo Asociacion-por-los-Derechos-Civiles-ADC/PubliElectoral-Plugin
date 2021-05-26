@@ -17,7 +17,8 @@ function handleMessage(request, sender, sendResponse) {
       json = {
         ad: request.ad,
         hash: request.hash,
-        location: request.location.toUpperCase()
+        location: request.location.toUpperCase(),
+        ad_account_name: request.ad_account_name
       }
       url = url + "/adv?plugin=true"
     }
@@ -28,7 +29,7 @@ function handleMessage(request, sender, sendResponse) {
     }).then(function(response) {
       console.log("SENDING DATA SUCCESSFULLY")
     }).catch(function(response) {
-      console.log("ERROR WHILE SENDING DATA")
+      console.log("ERROR WHILE SENDING DATA", response)
     });
   })
 }
