@@ -13,6 +13,16 @@ function handleMessage(request, sender, sendResponse) {
         source: request.source
       }
       url = url + "/download"
+    } else if (request.notify) {
+      json = {
+        ad: request.ad,
+        hash: request.hash,
+        location: request.location.toUpperCase(),
+        ad_account_name: request.ad_account_name,
+        notify: true,
+        source: request.source
+      }
+      url = url + "/adv?plugin=true&notify=true"
     } else {
       json = {
         ad: request.ad,

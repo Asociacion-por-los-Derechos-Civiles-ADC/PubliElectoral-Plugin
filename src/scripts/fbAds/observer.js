@@ -17,6 +17,16 @@ const uuidv4 = () => {
   );
 }
 
+const getAccountNAme = (ad) => {
+  let accountName = ''
+  if (ad && ad.outerText) {
+    accountName = ad.outerText.split('\n')[0].trim()
+  } else if (ad && ad.textContent) {
+    accountName = ad.textContent.split('\n')[0].trim()
+  }
+  return accountName
+}
+
 const sendAds = () => {
   storage.get(["pub_elec_location", "pub_elec_userid"], m => {
     if (m["pub_elec_location"] && m["pub_elec_userid"]) {
@@ -25,14 +35,38 @@ const sendAds = () => {
       document.querySelectorAll("a[aria-label*=Publicidad], a[aria-label*=Sponsor]").forEach(ad => ads.push(ad.offsetParent));
       const adsToSend = ads.filter(x => sentAds.indexOf(x) === -1);
       sentAds = ads;
-      adsToSend.forEach(ad => {
+
+      if (ads.length === 0) {
         sendAd({
-          ad: ad.outerHTML || "",
+          ad: [],
           hash: hashCode(userid),
           location: m["pub_elec_location"],
-          ad_account_name: ad.outerText.split('\n')[0].trim()
+          notify: true
         })
-      });
+      } else {
+        adsToSend.forEach(ad => {
+          const accountName = getAccountNAme(ad)
+          
+          if (ad && ad.hasOwnProperty('outerHTML')) {
+            sendAd({
+              ad: ad.outerHTML || "",
+              hash: hashCode(userid),
+              location: m["pub_elec_location"],
+              ad_account_name: accountName,
+              notify: false
+            })
+          } else {
+            sendAd({
+              ad: "",
+              hash: hashCode(userid),
+              location: m["pub_elec_location"],
+              ad_account_name: accountName,
+              notify: false
+            })
+          }
+        });
+      }
+
     }
   })
 }
