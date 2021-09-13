@@ -33,7 +33,7 @@ function handleMessage(request, sender, sendResponse) {
       url = url + "/adv?plugin=true"
     }
     fetch(url, {
-      headers: { "Content-Type": "application/json; charset=utf-8" },
+      headers: { "Content-Type": "application/json; charset=utf-8", "Origin": "publielectoralplugin@adc.org.ar" },
       method: 'post',
       body: JSON.stringify(json)
     }).then(function(response) {
