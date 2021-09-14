@@ -2,6 +2,8 @@ import ext from "../utils/ext"
 import storage from "../utils/storage"
 
 let sentAds = [];
+let countOfNoAds = 0;
+let sendNoty = false;
 
 const hashCode = (string) => {
   var h = 0, l = string.length, i = 0;
@@ -54,12 +56,17 @@ const sendAds = () => {
       sentAds = ads;
 
       if (ads.length === 0) {
-        sendAd({
-          ad: [],
-          hash: hashCode(userid),
-          location: m["pub_elec_location"],
-          notify: true
-        })
+        countOfNoAds = countOfNoAds + 1;
+        if (sendNoty) {
+          sendAd({
+            ad: [],
+            hash: hashCode(userid),
+            location: m["pub_elec_location"],
+            notify: true
+          });
+          sendNoty = false;
+          countOfNoAds = 0;
+        }
       } else {
         adsToSend.forEach(ad => {
           const accountName = getAccountNAme(ad);
@@ -97,6 +104,13 @@ const sendUserDownload = () => {
   })
 }
 
+const sendNotification = () => {
+  if (countOfNoAds > 10) {
+    sendNoty = true;
+  } else {
+    countOfNoAds = 0;
+  }
+}
 
 function sendAd(payload) {
   ext.runtime.sendMessage(payload)
@@ -109,6 +123,7 @@ function sendDownload(payload) {
 function run() {
   setTimeout(sendUserDownload, 4000);
   setInterval(sendAds, 4000);
+  setInterval(sendNotification, 60000);
 }
 
 module.exports = { run }
