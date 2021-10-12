@@ -35,23 +35,36 @@ const sendAds = () => {
       const ads = [];
       const userid = m["pub_elec_userid"]
 
-      let divs_spanish = document.evaluate("//div[text()='Publicidad']", document, null, XPathResult.ANY_TYPE, null)
-      let divs_english = document.evaluate("//div[text()='Sponsored']", document, null, XPathResult.ANY_TYPE, null)
+      const normalRegex = "//html[@id='facebook']//hover(a[contains(@href, 'ads/about'))]"
+      const sponsoredRegexES = "//div[text()='Publicidad']"
+      const sponsoredRegexEN =  "//div[text()='Sponsored']"
+      const language = window.navigator.language
 
-      let iterateObjSP = divs_spanish.iterateNext();
-      let iterateObjEN = divs_english.iterateNext();
 
-      while(iterateObjSP) {
-        ads.push(iterateObjSP.offsetParent);
-        iterateObjSP = divs_spanish.iterateNext();
+      let divs_normal = document.evaluate(normalRegex, document, null, XPathResult.ANY_TYPE, null);
+      let iterateObjNormal = divs_normal.iterateNext();
+      while(iterateObjNormal) {
+        ads.push(iterateObjNormal.offsetParent);
+        iterateObjNormal = divs_normal.iterateNext();
       }
       
-      while(iterateObjEN) {
-        ads.push(iterateObjEN.offsetParent);
-        iterateObjEN = divs_english.iterateNext();
+
+      if (language.includes('es')) {
+        let divs_spanish = document.evaluate(sponsoredRegexES, document, null, XPathResult.ANY_TYPE, null)
+        let iterateObjSP = divs_spanish.iterateNext();
+        while(iterateObjSP) {
+          ads.push(iterateObjSP.offsetParent);
+          iterateObjSP = divs_spanish.iterateNext();
+        }
+      } else {
+        let divs_english = document.evaluate(sponsoredRegexEN, document, null, XPathResult.ANY_TYPE, null);
+        let iterateObjEN = divs_english.iterateNext();
+        while(iterateObjEN) {
+          ads.push(iterateObjEN.offsetParent);
+          iterateObjEN = divs_english.iterateNext();
+        }
       }
-      
-      document.querySelectorAll("a[aria-label*=Publicidad], a[aria-label*=Sponsor]").forEach(ad => ads.push(ad.offsetParent));
+          
       const adsToSend = ads.filter(x => sentAds.indexOf(x) === -1);
       sentAds = ads;
 
@@ -71,7 +84,7 @@ const sendAds = () => {
         adsToSend.forEach(ad => {
           const accountName = getAccountNAme(ad);
           sendAd({
-            ad: ad.outerHTML || "<h3>Sin contenido para mostrar</h3>",
+            ad: ad.outerHTML || ad,
             hash: hashCode(userid),
             location: m["pub_elec_location"],
             ad_account_name: accountName,
