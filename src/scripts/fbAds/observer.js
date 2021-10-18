@@ -35,7 +35,7 @@ const sendAds = () => {
       const ads = [];
       const userid = m["pub_elec_userid"]
 
-      const normalRegex = "//html[@id='facebook']//hover(a[contains(@href, 'ads/about'))]"
+      const normalRegex = "//span/a[contains(@aria-label, 'Publicidad') or contains(@aria-label, 'Sponsored') or contains(text(), 'Colaboración pagada')]"
       const sponsoredRegexES = "//div[text()='Publicidad']"
       const sponsoredRegexEN =  "//div[text()='Sponsored']"
       const language = window.navigator.language
