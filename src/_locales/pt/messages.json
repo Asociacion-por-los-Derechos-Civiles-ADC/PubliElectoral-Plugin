@@ -1,14 +1,12 @@
 {
   "appName": {
-    "message": "Publielectoral PT",
-    "description": "En portugues."
+    "message": "PubliElectoral"
   },
   "appDescription": {
-    "message": " Descripcion En portugues",
-    "description": "des en portugues."
+    "message": "PubliElectoral é uma ferramenta tecnológica de interesse social que permite a coleta de informações relacionadas à publicidade eleitoral nas redes sociais sem afetar a privacidade dos usuários.",
+    "about": "Sobre a PublicElectoral"
   },
-  "btnTooltip": {
-    "message": "Descripcion en portugues",
-    "description": "tooltip en portugeus."
+  "selectCountry": {
+    "message": "Por favor selecione seu país."
   }
 }

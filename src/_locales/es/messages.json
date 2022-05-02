@@ -1,0 +1,12 @@
+{
+  "appName": {
+    "message": "PubliElectoral"
+  },
+  "appDescription": {
+    "message": "PubliElectoral es una herramienta tecnológica de interés social que permite la recolección de información relativa a la publicidad electoral en redes sociales sin afectar la privacidad de las personas usuarias.",
+    "about": "Acerca de PubliElectoral"
+  },
+  "selectCountry": {
+    "message": "Por favor, selecciona tú país."
+  }
+}
