@@ -1,0 +1,14 @@
+{
+  "appName": {
+    "message": "Publielectoral PT",
+    "description": "En portugues."
+  },
+  "appDescription": {
+    "message": " Descripcion En portugues",
+    "description": "des en portugues."
+  },
+  "btnTooltip": {
+    "message": "Descripcion en portugues",
+    "description": "tooltip en portugeus."
+  }
+}
