@@ -1,5 +1,5 @@
 {
-  "name": "PubliElectoral Plugin",
+  "name": "__MSG__appName__",
   "version": "0.0.27",
   "manifest_version": 2,
   "description": "__MSG_appDescription__",
@@ -39,7 +39,7 @@
       "36": "icons/icon-36.png",
       "128": "icons/icon-128.png"
     },
-    "default_title": "PubliElectoral",
+    "default_title": "__MSG_appName__",
     "default_popup": "popup.html"
   },
   "applications": {
