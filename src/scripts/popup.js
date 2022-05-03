@@ -6,8 +6,8 @@ import * as esmessages from '../_locales/es/messages.json';
 import * as enmessages from '../_locales/en/messages.json';
 
 const locale = navigator.language
-let locations = []
-let tranlations = {}
+let locations = enmessages
+let tranlations = config.locations.en
 
 if (locale.includes('pt')) {
   tranlations = ptmessages
