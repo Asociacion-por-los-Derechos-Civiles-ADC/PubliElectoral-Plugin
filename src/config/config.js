@@ -23,7 +23,7 @@ export default
       "Paraguai",
     ]
   },
-  "adUri": "https://api.publielectoral.lat",
+  "adUri": "http://192.168.0.9:5078",
   "fbAds": {
     "mainContainerQuerySelector": "[id^='topnews_main_stream_'",
     "profileIdContainerQuerySelector": "a[title='Perfil']",
