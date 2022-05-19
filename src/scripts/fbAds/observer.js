@@ -22,12 +22,8 @@ const uuidv4 = () => {
 }
 
 const getAccountNAme = (ad) => {
-  let accountName = ''
-  if (ad && ad.outerText) {
-    accountName = ad.outerText.split('\n')[0].trim()
-  } else if (ad && ad.textContent) {
-    accountName = ad.textContent.split('\n')[0].trim()
-  }
+  let outerText = ad && ad.outerText ? ad.outerText : null;
+  let accountName = outerText && outerText.startsWith('Activo') ? outerText.split('\n')[1].trim() : outerText.split('\n')[0].trim();
   return accountName
 }
 
