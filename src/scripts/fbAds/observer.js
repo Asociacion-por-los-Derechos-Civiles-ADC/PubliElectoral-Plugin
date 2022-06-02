@@ -27,42 +27,21 @@ const getAccountNAme = (ad) => {
   return accountName
 }
 
-const getSponsoredWord = () => {
-  let word = 'Publicidad';
-  switch (LANGUAGE) {
-    case 'en-US':
-      word = 'Sponsored'
-      break;
-    case 'pt-BR':
-      word = 'Patrocinado'
-      break;
-    default:
-      word = 'Publicidad'
-      break;
-  }
-  return word;
-}
+const sponsoredWords = [
+  'Publicidad',
+  'Sponsored',
+  'Patrocinado'
+]
 
-const getCollabWord = () => {
-  let word = 'Colaboración pagada';
-  switch (LANGUAGE) {
-    case 'en-US':
-      word = 'Paid Partnership';
-      break;
-    case 'pt-BR':
-      word = 'Parceria paga';
-      break;
-    default:
-      word = 'Colaboración pagada';
-      break;
-  }
-  return word;
-}
+const collabWords = [
+  'Colaboración pagada',
+  'Paid Partnership',
+  'Parceria paga'
+]
 
 const isSponsored = (item) => {
-  const sponsored = getSponsoredWord();
-  const collab = getCollabWord();
-  return item.outerText.replaceAll('-','') == sponsored || item.outerText.replaceAll('-','') == collab;
+  const word = item.outerText.replaceAll('-','');
+  return sponsoredWords.includes(word) || collabWords.includes(word);
 }
 
 const sendAds = () => {
