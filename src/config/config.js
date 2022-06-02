@@ -1,13 +1,29 @@
 export default
 {
-  "locations": [
-    "Elija su ubicación",
-    "Argentina",
-    "Chile",
-    "Mexico",
-    "Paraguay"
-  ],
-  "adUri": "https://api.publielectoral.lat",
+  "locations": {
+    "es": [
+      "Argentina",
+      "Brasil",
+      "Chile",
+      "México",
+      "Paraguay"
+    ],
+    "en": [
+      "Argentina",
+      "Brazil",
+      "Chile",
+      "Mexico",
+      "Paraguay"
+    ],
+    "pt": [
+      "Argentina",
+      "Brasil",
+      "Chile",
+      "Mexico",
+      "Paraguai",
+    ]
+  },
+  "adUri": "http://192.168.0.9:5078",
   "fbAds": {
     "mainContainerQuerySelector": "[id^='topnews_main_stream_'",
     "profileIdContainerQuerySelector": "a[title='Perfil']",

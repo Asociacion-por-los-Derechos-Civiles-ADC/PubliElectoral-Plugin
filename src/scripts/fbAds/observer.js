@@ -1,9 +1,11 @@
 import ext from "../utils/ext"
 import storage from "../utils/storage"
 
+const LANGUAGE = window.navigator.language;
+const REGEX = "a[href*='#'],a[href*='/business/help']";
+
 let sentAds = [];
 let countOfNoAds = 0;
-let sendNoty = false;
 
 const hashCode = (string) => {
   var h = 0, l = string.length, i = 0;
@@ -20,79 +22,49 @@ const uuidv4 = () => {
 }
 
 const getAccountNAme = (ad) => {
-  let accountName = ''
-  if (ad && ad.outerText) {
-    accountName = ad.outerText.split('\n')[0].trim()
-  } else if (ad && ad.textContent) {
-    accountName = ad.textContent.split('\n')[0].trim()
-  }
+  let outerText = ad && ad.outerText ? ad.outerText : null;
+  let accountName = outerText && outerText.startsWith('Activo') ? outerText.split('\n')[1].trim() : outerText.split('\n')[0].trim();
   return accountName
+}
+
+const sponsoredWords = [
+  'Publicidad',
+  'Sponsored',
+  'Patrocinado'
+]
+
+const collabWords = [
+  'Colaboración pagada',
+  'Paid Partnership',
+  'Parceria paga'
+]
+
+const isSponsored = (item) => {
+  const word = item.outerText.replaceAll('-','');
+  return sponsoredWords.includes(word) || collabWords.includes(word);
 }
 
 const sendAds = () => {
   storage.get(["pub_elec_location", "pub_elec_userid"], m => {
     if (m["pub_elec_location"] && m["pub_elec_userid"]) {
       const ads = [];
-      const userid = m["pub_elec_userid"]
+      const userid = m["pub_elec_userid"];
 
-      const normalRegex = "//span/a[contains(@aria-label, 'Publicidad') or contains(@aria-label, 'Sponsored') or contains(text(), 'Colaboración pagada')]"
-      const sponsoredRegexES = "//div[text()='Publicidad']"
-      const sponsoredRegexEN =  "//div[text()='Sponsored']"
-      const language = window.navigator.language
+      let items = document.querySelectorAll(REGEX);
+      items.forEach(item => isSponsored(item) ? ads.push(item.offsetParent) : ads);
 
-
-      let divs_normal = document.evaluate(normalRegex, document, null, XPathResult.ANY_TYPE, null);
-      let iterateObjNormal = divs_normal.iterateNext();
-      while(iterateObjNormal) {
-        ads.push(iterateObjNormal.offsetParent);
-        iterateObjNormal = divs_normal.iterateNext();
-      }
-      
-
-      if (language.includes('es')) {
-        let divs_spanish = document.evaluate(sponsoredRegexES, document, null, XPathResult.ANY_TYPE, null)
-        let iterateObjSP = divs_spanish.iterateNext();
-        while(iterateObjSP) {
-          ads.push(iterateObjSP.offsetParent);
-          iterateObjSP = divs_spanish.iterateNext();
-        }
-      } else {
-        let divs_english = document.evaluate(sponsoredRegexEN, document, null, XPathResult.ANY_TYPE, null);
-        let iterateObjEN = divs_english.iterateNext();
-        while(iterateObjEN) {
-          ads.push(iterateObjEN.offsetParent);
-          iterateObjEN = divs_english.iterateNext();
-        }
-      }
-          
       const adsToSend = ads.filter(x => sentAds.indexOf(x) === -1);
       sentAds = ads;
 
-      if (ads.length === 0) {
-        countOfNoAds = countOfNoAds + 1;
-        if (sendNoty) {
-          sendAd({
-            ad: [],
-            hash: hashCode(userid),
-            location: m["pub_elec_location"],
-            notify: true
-          });
-          sendNoty = false;
-          countOfNoAds = 0;
-        }
-      } else {
-        adsToSend.forEach(ad => {
-          const accountName = getAccountNAme(ad);
-          sendAd({
-            ad: ad.outerHTML || ad,
-            hash: hashCode(userid),
-            location: m["pub_elec_location"],
-            ad_account_name: accountName,
-            notify: false
-          })
-        });
-      }
-
+      adsToSend.forEach(ad => {
+        sendAd({
+          ad: ad.outerHTML || ad,
+          hash: hashCode(userid),
+          location: m["pub_elec_location"],
+          ad_account_name: getAccountNAme(ad),
+          notify: false
+        })
+      });
     }
   })
 }
@@ -118,10 +90,19 @@ const sendUserDownload = () => {
 }
 
 const sendNotification = () => {
-  if (countOfNoAds > 10) {
-    sendNoty = true;
+  if (sentAds.length == 0) {
+    countOfNoAds = countOfNoAds + 1;
+    if (countOfNoAds > 10) {
+      sendAd({
+        ad: [],
+        hash: hashCode(userid),
+        location: m["pub_elec_location"],
+        notify: true
+      });
+      countOfNoAds = 0;
+    }
   } else {
-    countOfNoAds = 0;
+    setTimeout(sendNotification, 60000);
   }
 }
 
@@ -136,7 +117,7 @@ function sendDownload(payload) {
 function run() {
   setTimeout(sendUserDownload, 4000);
   setInterval(sendAds, 4000);
-  setInterval(sendNotification, 60000);
+  setTimeout(sendNotification, 60000);
 }
 
 module.exports = { run }
