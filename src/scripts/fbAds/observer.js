@@ -113,6 +113,15 @@ const getSpanValues = (nodes) => {
     } else if ('Patrocinado'.includes(letter)) {
       result+=letter;
       match+=1
+    } else if ('Colaboración pagada'.includes(letter)) {
+      result+=letter;
+      match+=1
+    } else if ('Paid Partnership'.includes(letter)) {
+      result+=letter;
+      match+=1
+    } else if ('Parceria paga'.includes(letter)) {
+      result+=letter;
+      match+=1
     }
   }
   return { result, match }
