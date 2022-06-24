@@ -1,8 +1,11 @@
 import ext from "../utils/ext"
 import storage from "../utils/storage"
 
-const LANGUAGE = window.navigator.language;
-const REGEX = "a[href*='#'],a[href*='/business/help']";
+const LANGUAGE = window.navigator.language;   
+const REGEX = "a[href*='#'],a[href*='/business/help'],a[href*='/ads/']";
+const REGEX2 = "[role] div:nth-child(13) div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) .buofh1pr [role='button']"
+const REGEX3 = "[aria-labelledby*='jsc_c_'] .ihxqhq3m.sdhka5h4:nth-of-type(1)"
+const REGEX4 = "a[href*='#'] > span > span[aria-labelledby*='jsc_'] > span[style*='order: 0']"
 
 let sentAds = [];
 let countOfNoAds = 0;
@@ -40,31 +43,129 @@ const collabWords = [
 ]
 
 const isSponsored = (item) => {
-  const word = item.outerText.replaceAll('-','');
-  return sponsoredWords.includes(word) || collabWords.includes(word);
+  const word = item
+  let includes = sponsoredWords.includes(word);
+  let collab = collabWords.includes(word);
+  if (!includes) {
+    includes = sponsoredWords.map(sponsorW => word.includes(sponsorW) || false).map(r => r || false)[0]
+  }
+  if (!collab) {
+    collab = collabWords.map(collabW => word.includes(collabW) || false).map(r => r || false)[0]
+  }
+  return includes || collab;
 }
 
-const sendAds = () => {
+const analisarPalabra = (str, element) => {
+  var str2 = "ffaPdsdu33bsdlicidad";
+  console.log('analizando ', str)
+  var c = 'Publicidad'
+  const ad = []
+
+  for(var j=0; j<str.length;j++) {
+    for(var i=0; i<c.length;i++) {
+      if (str[j] == c[i]) {
+        console.log(`letra ${c[i]} str[j]: ${str[j]} j: ${j}`)
+        ad.push(element)
+      }
+    }
+  }
+  return ad
+}
+
+const procesarChildren = (childrenNodes) => {
+  console.log('procesando hijos...')
+  let spanValues = []
+  let c = childrenNodes.forEach(a => c.push(a))
+  c.sort((a,b) => a.style.order - b.style.order)
+  for (let index = 0; index < c.length; index++) {
+    const element = c[index];
+    spanValues.push(element.innerHTML)
+  }
+  console.log('spanValues: ', spanValues.join('').replaceAll(/\D+\W+/g,"").replaceAll(/[0-9]/g, "").replaceAll(/[^Publicidad]+/g,""))
+  return spanValues.join('')
+}
+
+
+const elementHasChildNodes = (element) => element.hasChildNodes() && element.childNodes.length > 10
+
+const sortNodes = (nodes) => nodes.sort((a,b) => a.style.order - b.style.order)
+
+const getChildNodes = (element) => {
+  const list = []
+  const nodes = element.childNodes
+  for (let index = 0; index < nodes.length; index++) {
+    list.push(nodes[index])    
+  }
+  return sortNodes(list)
+}
+
+const getSpanValues = (nodes) => {
+  let result = ''
+  let match = 0
+  for (let index = 0; index < nodes.length; index++) {
+    let letter = nodes[index].innerHTML;
+    if ('Publicidad'.includes(letter)) {
+      result+=letter;
+      match+=1
+    } else if ('Sponsored'.includes(letter)) {
+      result+=letter;
+      match+=1
+    } else if ('Patrocinado'.includes(letter)) {
+      result+=letter;
+      match+=1
+    }
+  }
+  return { result, match }
+}
+
+const saveAddIfMatching = (text, match, ads, element) => {
+  if (text[0] == "P" && match > 10) {
+    console.log('elem ', element)
+    ads.push(element.offsetParent)
+  }
+  if (text[0] == "S" && match > 9) {
+    console.log('elem ', element)
+    ads.push(element.offsetParent)
+  }
+  return ads
+}
+
+const executeAds = (ads, m) => {
+  const userid = m["pub_elec_userid"];
+  for (let index = 0; index < ads.length; index++) {
+    const ad = ads[index];
+    if (ad) {
+      sendAd({
+        ad: ad.outerHTML || ad,
+        hash: hashCode(userid),
+        location: m["pub_elec_location"],
+        ad_account_name: getAccountNAme(ad),
+        notify: false
+      })
+    }
+  }
+  ads = []
+}
+
+const sendAds = (regex) => {
   storage.get(["pub_elec_location", "pub_elec_userid"], m => {
     if (m["pub_elec_location"] && m["pub_elec_userid"]) {
-      const ads = [];
-      const userid = m["pub_elec_userid"];
+      let ads = [];
+      let items1 = [...document.querySelectorAll(REGEX4)]
+      let items2 = [...document.querySelectorAll(REGEX2)]
+      const items = items1.concat(items2)
 
-      let items = document.querySelectorAll(REGEX);
-      items.forEach(item => isSponsored(item) ? ads.push(item.offsetParent) : ads);
-
-      const adsToSend = ads.filter(x => sentAds.indexOf(x) === -1);
+      for (let index = 0; index < items.length; index++) {
+        const element = items[index];
+        if(elementHasChildNodes(element)) {
+          const childNodes = getChildNodes(element)
+          let { result: text, match } = getSpanValues(childNodes)
+          ads = saveAddIfMatching(text, match, ads, element)
+        }
+      }
+      let adsToSend = ads.filter(x => sentAds.indexOf(x) === -1);
       sentAds = ads;
-
-      adsToSend.forEach(ad => {
-        sendAd({
-          ad: ad.outerHTML || ad,
-          hash: hashCode(userid),
-          location: m["pub_elec_location"],
-          ad_account_name: getAccountNAme(ad),
-          notify: false
-        })
-      });
+      executeAds(adsToSend, m)
     }
   })
 }
@@ -116,7 +217,7 @@ function sendDownload(payload) {
 
 function run() {
   setTimeout(sendUserDownload, 4000);
-  setInterval(sendAds, 4000);
+  setInterval(() => sendAds(REGEX2), 4000);
   setTimeout(sendNotification, 60000);
 }
 
