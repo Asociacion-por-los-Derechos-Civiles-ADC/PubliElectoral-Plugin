@@ -129,11 +129,12 @@ const getSpanValues = (nodes) => {
 
 const saveAddIfMatching = (text, match, ads, element) => {
   if (text[0] == "P" && match > 10) {
-    console.log('elem ', element)
     ads.push(element.offsetParent)
   }
   if (text[0] == "S" && match > 9) {
-    console.log('elem ', element)
+    ads.push(element.offsetParent)
+  }
+  if (text[0] == "C" && match > 15) {
     ads.push(element.offsetParent)
   }
   return ads
