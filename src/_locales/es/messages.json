@@ -8,5 +8,8 @@
   },
   "selectCountry": {
     "message": "Por favor, selecciona tú país."
+  },
+  "storeDescription": {
+    "message": "Escanea la publicidad política que aparece en tu cuenta de Facebook"
   }
 }

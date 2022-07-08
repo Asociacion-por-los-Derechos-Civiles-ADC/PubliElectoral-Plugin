@@ -3,9 +3,9 @@ import storage from "../utils/storage"
 
 const LANGUAGE = window.navigator.language;   
 const REGEX = "a[href*='#'],a[href*='/business/help'],a[href*='/ads/']";
-const REGEX2 = "[role] div:nth-child(13) div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) .buofh1pr [role='button']"
+const REGEX2 = "[role] div:nth-child(3) div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) .knvmm38d:nth-of-type(2) [dir]"
 const REGEX3 = "[aria-labelledby*='jsc_c_'] .ihxqhq3m.sdhka5h4:nth-of-type(1)"
-const REGEX4 = "a[href*='#'] > span > span[aria-labelledby*='jsc_'] > span[style*='order: 0']"
+const REGEX4 = "a[href*='#'] > span > span[aria-labelledby*='jsc_'] > div[style*='order: 0'],a[href*='/business/help']"
 
 let sentAds = [];
 let countOfNoAds = 0;
@@ -57,7 +57,6 @@ const isSponsored = (item) => {
 
 const analisarPalabra = (str, element) => {
   var str2 = "ffaPdsdu33bsdlicidad";
-  console.log('analizando ', str)
   var c = 'Publicidad'
   const ad = []
 
@@ -73,7 +72,6 @@ const analisarPalabra = (str, element) => {
 }
 
 const procesarChildren = (childrenNodes) => {
-  console.log('procesando hijos...')
   let spanValues = []
   let c = childrenNodes.forEach(a => c.push(a))
   c.sort((a,b) => a.style.order - b.style.order)
@@ -81,7 +79,6 @@ const procesarChildren = (childrenNodes) => {
     const element = c[index];
     spanValues.push(element.innerHTML)
   }
-  console.log('spanValues: ', spanValues.join('').replaceAll(/\D+\W+/g,"").replaceAll(/[0-9]/g, "").replaceAll(/[^Publicidad]+/g,""))
   return spanValues.join('')
 }
 
@@ -164,7 +161,7 @@ const sendAds = (regex) => {
       let items1 = [...document.querySelectorAll(REGEX4)]
       let items2 = [...document.querySelectorAll(REGEX2)]
       const items = items1.concat(items2)
-
+      
       for (let index = 0; index < items.length; index++) {
         const element = items[index];
         if(elementHasChildNodes(element)) {
@@ -227,7 +224,7 @@ function sendDownload(payload) {
 
 function run() {
   setTimeout(sendUserDownload, 4000);
-  setInterval(() => sendAds(REGEX2), 4000);
+  setInterval(sendAds, 4000);
   setTimeout(sendNotification, 60000);
 }
 

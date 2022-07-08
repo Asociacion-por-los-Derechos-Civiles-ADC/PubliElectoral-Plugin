@@ -1,7 +1,7 @@
 import ext from "./utils/ext";
 import storage from "./utils/storage";
 import config from "../config/config.js";
-import * as ptmessages from '../_locales/pt/messages.json';
+import * as ptmessages from '../_locales/pt_BR/messages.json';
 import * as esmessages from '../_locales/es/messages.json';
 import * as enmessages from '../_locales/en/messages.json';
 
