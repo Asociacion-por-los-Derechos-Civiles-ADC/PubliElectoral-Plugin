@@ -5,7 +5,8 @@ const LANGUAGE = window.navigator.language;
 const REGEX = "a[href*='#'],a[href*='/business/help'],a[href*='/ads/']";
 const REGEX2 = "[role] div:nth-child(3) div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) .knvmm38d:nth-of-type(2) [dir]"
 const REGEX3 = "[aria-labelledby*='jsc_c_'] .ihxqhq3m.sdhka5h4:nth-of-type(1)"
-const REGEX4 = "a[href*='#'] > span > span[aria-labelledby*='jsc_'] > div[style*='order: 0'],a[href*='/business/help']"
+const REGEX4 = "a[href*='#'] > span > span[aria-labelledby*='jsc_'], a[href*='/business/help']"
+const REGEX5 = "[role] .a8c37x1j:nth-child(3) .knvmm38d:nth-of-type(2) [role]"
 
 let sentAds = [];
 let countOfNoAds = 0;
@@ -30,6 +31,10 @@ const getAccountNAme = (ad) => {
   return accountName
 }
 
+const PUBLICIDAD = 'Publicidad'
+const SPONSORED = 'Sponsored'
+const PATROCINADO = 'Patrocinado'
+
 const sponsoredWords = [
   'Publicidad',
   'Sponsored',
@@ -41,101 +46,6 @@ const collabWords = [
   'Paid Partnership',
   'Parceria paga'
 ]
-
-const isSponsored = (item) => {
-  const word = item
-  let includes = sponsoredWords.includes(word);
-  let collab = collabWords.includes(word);
-  if (!includes) {
-    includes = sponsoredWords.map(sponsorW => word.includes(sponsorW) || false).map(r => r || false)[0]
-  }
-  if (!collab) {
-    collab = collabWords.map(collabW => word.includes(collabW) || false).map(r => r || false)[0]
-  }
-  return includes || collab;
-}
-
-const analisarPalabra = (str, element) => {
-  var str2 = "ffaPdsdu33bsdlicidad";
-  var c = 'Publicidad'
-  const ad = []
-
-  for(var j=0; j<str.length;j++) {
-    for(var i=0; i<c.length;i++) {
-      if (str[j] == c[i]) {
-        console.log(`letra ${c[i]} str[j]: ${str[j]} j: ${j}`)
-        ad.push(element)
-      }
-    }
-  }
-  return ad
-}
-
-const procesarChildren = (childrenNodes) => {
-  let spanValues = []
-  let c = childrenNodes.forEach(a => c.push(a))
-  c.sort((a,b) => a.style.order - b.style.order)
-  for (let index = 0; index < c.length; index++) {
-    const element = c[index];
-    spanValues.push(element.innerHTML)
-  }
-  return spanValues.join('')
-}
-
-
-const elementHasChildNodes = (element) => element.hasChildNodes() && element.childNodes.length > 10
-
-const sortNodes = (nodes) => nodes.sort((a,b) => a.style.order - b.style.order)
-
-const getChildNodes = (element) => {
-  const list = []
-  const nodes = element.childNodes
-  for (let index = 0; index < nodes.length; index++) {
-    list.push(nodes[index])    
-  }
-  return sortNodes(list)
-}
-
-const getSpanValues = (nodes) => {
-  let result = ''
-  let match = 0
-  for (let index = 0; index < nodes.length; index++) {
-    let letter = nodes[index].innerHTML;
-    if ('Publicidad'.includes(letter)) {
-      result+=letter;
-      match+=1
-    } else if ('Sponsored'.includes(letter)) {
-      result+=letter;
-      match+=1
-    } else if ('Patrocinado'.includes(letter)) {
-      result+=letter;
-      match+=1
-    } else if ('Colaboración pagada'.includes(letter)) {
-      result+=letter;
-      match+=1
-    } else if ('Paid Partnership'.includes(letter)) {
-      result+=letter;
-      match+=1
-    } else if ('Parceria paga'.includes(letter)) {
-      result+=letter;
-      match+=1
-    }
-  }
-  return { result, match }
-}
-
-const saveAddIfMatching = (text, match, ads, element) => {
-  if (text[0] == "P" && match > 10) {
-    ads.push(element.offsetParent)
-  }
-  if (text[0] == "S" && match > 9) {
-    ads.push(element.offsetParent)
-  }
-  if (text[0] == "C" && match > 15) {
-    ads.push(element.offsetParent)
-  }
-  return ads
-}
 
 const executeAds = (ads, m) => {
   const userid = m["pub_elec_userid"];
@@ -154,6 +64,17 @@ const executeAds = (ads, m) => {
   ads = []
 }
 
+const annan = (ls_text, regex) => {
+  let result = []
+  for (let index = 0; index < ls_text.length; index++) {
+    const letter = ls_text[index];
+    if (regex.indexOf(letter) !== -1) {
+      result.push(letter)
+    }
+  }
+  return new Set(result)
+}
+
 const sendAds = (regex) => {
   storage.get(["pub_elec_location", "pub_elec_userid"], m => {
     if (m["pub_elec_location"] && m["pub_elec_userid"]) {
@@ -164,10 +85,20 @@ const sendAds = (regex) => {
       
       for (let index = 0; index < items.length; index++) {
         const element = items[index];
-        if(elementHasChildNodes(element)) {
-          const childNodes = getChildNodes(element)
-          let { result: text, match } = getSpanValues(childNodes)
-          ads = saveAddIfMatching(text, match, ads, element)
+        let ls_text = element.innerText.split('\n')
+        let text = ls_text.join('')
+        let isSponsored = text.includes(PUBLICIDAD) || text.includes(SPONSORED) || text.includes(PATROCINADO)
+        
+        if (!isSponsored) {
+          let res = annan(ls_text, PUBLICIDAD) //     es: 8, en: 6, pt: 7
+          let res2 = annan(ls_text, SPONSORED) //     es: 8, en: 8, pt: 8
+          let res3 = annan(ls_text, PATROCINADO) //   es: 9, en: 8, pt: 9
+
+          if (res.size >= 6 && res2.size === 8 && res3.size >= 8) {
+            ads.push(element.offsetParent)
+          }            
+        } else {
+          ads.push(element.offsetParent)
         }
       }
       let adsToSend = ads.filter(x => sentAds.indexOf(x) === -1);
